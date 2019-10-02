@@ -24,10 +24,6 @@ namespace webtest.dbcontext
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
-            //var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-            //    .AddJsonFile("appsettings.json");
-            //var configuration = builder.Build();
-
             var serviceProvider = new ServiceCollection().AddEntityFrameworkSqlServer()
                 .AddSingleton<IModelCustomizer, SchemaContextCustomize>()
                 .BuildServiceProvider();
@@ -66,16 +62,6 @@ namespace webtest.dbcontext
 
         /* add your table models here */
         public DbSet<Name> Name { get; set; }
-    }
-}
-
-public static class ModelBuilderExtensions
-{
-    public static void RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
-    {
-        foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
-        {
-            entity.Relational().TableName = entity.DisplayName();
-        }
+        public DbSet<Tenant> Tenant { get; set; }
     }
 }
