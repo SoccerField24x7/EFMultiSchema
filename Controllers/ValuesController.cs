@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using webtest.dbcontext;
 
 namespace webtest.Controllers
@@ -16,24 +14,26 @@ namespace webtest.Controllers
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public JsonResult Get()
         {
-            //var serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+            List<string> firstNames = new List<string>();
 
-            //var optionsBuilder = new DbContextOptionsBuilder<CrmContext>();
-            //optionsBuilder.UseSqlServer(Startup.Configuration.GetConnectionString("DbService"));
-
-            using (var context = new CrmContext("1"))
+            // get the tenant information
+            using (var context = new CrmContext("dbo"))
             {
-                var records = context.Name.FirstOrDefault();
+                var tenants = context.Tenant.Where(x => x.IsActive == 1);
+                foreach (var tenant in tenants)
+                {
+                    // now let's get the User's name from different schemas
+                    using (var schemaCrmContext = new CrmContext(tenant.SchemaId))
+                    {
+                        var records = schemaCrmContext.Name.FirstOrDefault();
+                        firstNames.Add(records.UserName);
+                    }
+                }
             }
 
-            using (var context = new CrmContext("2"))
-            {
-                var records = context.Name.FirstOrDefault();
-            }
-            
-            return new string[] { "value1", "value2" };
+            return new JsonResult(firstNames);
         }
 
         // GET api/values/5
