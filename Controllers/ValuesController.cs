@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-//using webtest.dbcontext;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using webtest.dbcontext;
 
 namespace webtest.Controllers
 {
@@ -16,8 +18,21 @@ namespace webtest.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            var serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
-            //var context = serviceCollection.Get
+            //var serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+
+            //var optionsBuilder = new DbContextOptionsBuilder<CrmContext>();
+            //optionsBuilder.UseSqlServer(Startup.Configuration.GetConnectionString("DbService"));
+
+            using (var context = new CrmContext("1"))
+            {
+                var records = context.Name.FirstOrDefault();
+            }
+
+            using (var context = new CrmContext("2"))
+            {
+                var records = context.Name.FirstOrDefault();
+            }
+            
             return new string[] { "value1", "value2" };
         }
 
