@@ -4,9 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace webtest.dbcontext.Models
 {
+    
     public class Name
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
         [MaxLength(50)]
